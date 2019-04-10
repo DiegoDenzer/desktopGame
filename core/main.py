@@ -17,6 +17,12 @@ def main():
     mapa_largura = 80
     mapa_altura = 50
 
+    tamanho_max_sala = 10
+    tamanho_min_sala = 6
+    max_salas = 30
+
+
+
     cores = {
         'parede': libtcod.Color(0, 0, 100),
         'chao': libtcod.Color(211, 211, 211)

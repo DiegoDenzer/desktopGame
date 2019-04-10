@@ -4,20 +4,26 @@ from core.entidade import Entidade
 
 from core.captura_entradas import captura_teclado
 from core.renderizacao import desenhar_tudo, limpar_tudo
+from maps.mapa_jogo import MapaJogo
 
 
 def main():
 
     # Largura
-    largura_tela = 50
+    largura_tela = 80
     # Altura
     altura_tela = 50
 
-    mapa_largura = 45
-    mapa_altura = 45
+    mapa_largura = 80
+    mapa_altura = 50
+
+    cores = {
+        'parede': libtcod.Color(0, 0, 100),
+        'chao': libtcod.Color(211, 211, 211)
+    }
 
     player = Entidade(int(largura_tela / 2), int(altura_tela / 2), '@', libtcod.white)
-    npc = Entidade(int(largura_tela / 2 - 1), int(altura_tela / 2), 'N', libtcod.yellow)
+    npc = Entidade(int(largura_tela / 2 - 5), int(altura_tela / 2), 'N', libtcod.yellow)
 
     entidades = [npc, player]
 
@@ -27,6 +33,9 @@ def main():
 
     console = libtcod.console_new(largura_tela, altura_tela)
 
+    mapa_jogo = MapaJogo(mapa_largura, mapa_altura)
+    mapa_jogo.fazer_mapa()
+
     # cria variaveis para teclas e Mouse.
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -35,7 +44,7 @@ def main():
         # captura eventos
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
         # desenhar
-        desenhar_tudo(console, entidades, largura_tela, altura_tela)
+        desenhar_tudo(console, entidades,mapa_jogo, largura_tela, altura_tela, cores)
 
         libtcod.console_flush()
         # limpar
@@ -50,7 +59,8 @@ def main():
 
         if mover:
             dx, dy = mover
-            player.mover(dx, dy)
+            if not mapa_jogo.is_bloqueado(player.x + dx, player.y + dy):
+                player.mover(dx, dy)
 
         if sair:
             return True

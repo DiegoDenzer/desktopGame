@@ -12,3 +12,5 @@ class Tile:
             bloqueio_visao = bloqueado
 
         self.bloqueio_visao = bloqueio_visao
+
+        self.explorado = False

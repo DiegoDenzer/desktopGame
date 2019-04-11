@@ -1,3 +1,5 @@
+from random import randint
+
 from maps.retangulo import Retangulo
 from maps.tile import Tile
 
@@ -13,7 +15,56 @@ class MapaJogo:
         tiles = [[Tile(True) for y in range(self.altura)] for x in range(self.largura)]
         return tiles
 
-    def fazer_mapa(self):
+    def fazer_mapa(self, max_salas, tamanho_min, tamanho_max, largura_mapa, altura_mapa, jogador):
+
+        salas = []
+        numero_salas = 0
+
+        for r in range(max_salas):
+            # random width and height
+            w = randint(tamanho_min, tamanho_max)
+            h = randint(tamanho_min, tamanho_max)
+            # posição aleatória sem sair dos limites do mapa
+            x = randint(0, largura_mapa - w - 1)
+            y = randint(0, altura_mapa - h - 1)
+
+            # cria as dimenções da sala
+            nova_sala = Retangulo(x, y, w, h)
+
+            # verificar se a sala se sobre pos
+            for outra_sala in salas:
+                if nova_sala.intercesao(outra_sala):
+                    break
+            else:
+                self.criar_sala(nova_sala)
+
+                # centralizar
+                (new_x, new_y) = nova_sala.centralizar()
+
+                if numero_salas == 0:
+                    # se a sala for a primeira e onde o jodor comeca
+                    jogador.x = new_x
+                    jogador.y = new_y
+                else:
+                    # Demais salas
+                    # centralizando
+                    (prev_x, prev_y) = salas[numero_salas - 1].centralizar()
+
+                    # um rand aqui para deixar mais interresante
+                    if randint(0, 1) == 1:
+                        # primeiro horiziontal e depois vertical
+                        self.criar_h_tunel(prev_x, new_x, prev_y)
+                        self.criar_v_tunel(prev_y, new_y, new_x)
+                    else:
+                        # aqui é aos contrario né  =)
+                        self.criar_v_tunel(prev_y, new_y, prev_x)
+                        self.criar_h_tunel(prev_x, new_x, new_y)
+
+                # Fazendo append na lista
+                salas.append(nova_sala)
+                numero_salas += 1
+
+    def fazer_mapa_estatico(self):
         # Para fins de demonstração
         sala1 = Retangulo(20, 15, 10, 15)
         sala2 = Retangulo(35, 15, 10, 15)

@@ -1,18 +1,31 @@
 import tcod as libtcod
 
 
-def desenhar_tudo(console, entidades, mapa, largura, altura, cores):
+def desenhar_tudo(console, entidades, mapa, largura, altura, cores, visao, recalcula_visao):
 
-    # Desenhar mapa
-    for y in range(mapa.altura):
-        for x in range(mapa.largura):
-            wall = mapa.tiles[x][y].bloqueio_visao
-            if wall:
-                libtcod.console_set_char_background(console, x, y, cores.get('parede'), libtcod.BKGND_SET)
-            else:
-                libtcod.console_set_char_background(console, x, y, cores.get('chao'), libtcod.BKGND_SET)
+    if recalcula_visao:
+        # Desenhar mapa
+        for y in range(mapa.altura):
+            for x in range(mapa.largura):
+                visivil = libtcod.map_is_in_fov(visao, x, y)
+                parede = mapa.tiles[x][y].bloqueio_visao
 
-    # Draw all entities in the list
+                if visivil:
+                    if parede:
+                        libtcod.console_set_char_background(console, x, y, cores.get('parede_iluminada'), libtcod.BKGND_SET)
+                    else:
+                        libtcod.console_set_char_background(console, x, y, cores.get('chao_iluminado'), libtcod.BKGND_SET)
+
+                    mapa.tiles[x][y].explorado = True
+
+                elif mapa.tiles[x][y].explorado:
+
+                    if parede:
+                        libtcod.console_set_char_background(console, x, y, cores.get('parede_escura'), libtcod.BKGND_SET)
+                    else:
+                        libtcod.console_set_char_background(console, x, y, cores.get('chao_escuro'), libtcod.BKGND_SET)
+
+    # desanha as entidades
     for entidade in entidades:
         desenhar(console, entidade)
 

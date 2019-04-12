@@ -1,13 +1,15 @@
 import math
 import tcod as libtcod
 
+from core.renderizacao import OrdemDesenho
+
 
 class Entidade:
     """
     Um objeto genérico para representar jogadores, inimigos, itens, etc.
     """
 
-    def __init__(self, x, y, char, cor, nome, bloqueia=False, combatente=None, ai=None):
+    def __init__(self, x, y, char, cor, nome, bloqueia=False, combatente=None, ai=None, ordem_desenho = OrdemDesenho.CORPO):
         self.x = x
         self.y = y
         self.char = char  # por hora o simbolo que represta a entidade depois podemos mudar
@@ -16,7 +18,7 @@ class Entidade:
         self.bloqueia = bloqueia
         self.combatente = combatente
         self.ai = ai
-
+        self.ordem_desenho = ordem_desenho
         if self.combatente:
             self.combatente.owner = self
 
@@ -39,7 +41,7 @@ class Entidade:
 
         if not (mapa._is_bloqueado(self.x + dx, self.y + dy) or
                 obter_entidade_com_bloqueio_por_localizacao(entidades, self.x + dx, self.y + dy)):
-            self.move(dx, dy)
+            self.mover(dx, dy)
 
     def distancia_para(self, outro):
         dx = outro.x - self.x
@@ -55,8 +57,8 @@ class Entidade:
 
         for y1 in range(mapa.altura):
             for x1 in range(mapa.largura):
-                libtcod.map_set_properties(fov, x1, y1, not mapa.tiles[x1][y1].block_sight,
-                                           not mapa.tiles[x1][y1].blocked)
+                libtcod.map_set_properties(fov, x1, y1, not mapa.tiles[x1][y1].bloqueio_visao,
+                                           not mapa.tiles[x1][y1].bloqueado)
 
         for entidade in entidades:
             if entidade.bloqueia and entidade != self and entidade != alvo:

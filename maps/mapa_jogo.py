@@ -4,6 +4,7 @@ import tcod as libtcod
 from core.componentes.ai import MonstroBasico
 from core.componentes.combatente import Combatente
 from core.entidade import Entidade
+from core.renderizacao import OrdemDesenho
 from maps.retangulo import Retangulo
 from maps.tile import Tile
 
@@ -114,12 +115,12 @@ class MapaJogo:
                     combatente_orc = Combatente(hp=10, defesa=0, forca=3)
                     ai = MonstroBasico()
                     monster = Entidade(x, y, 'o', libtcod.desaturated_green, 'Orc', bloqueia=True,
-                                       combatente=combatente_orc, ai=ai)
+                                       combatente=combatente_orc, ai=ai, ordem_desenho=OrdemDesenho.ATOR)
                 else:
                     combatente_troll = Combatente(hp=16, defesa=1, forca=4)
                     ai = MonstroBasico()
                     monster = Entidade(x, y, 'T', libtcod.darker_green, 'Troll', bloqueia=True,
-                                       combatente=combatente_troll, ai=ai)
+                                       combatente=combatente_troll, ai=ai, ordem_desenho=OrdemDesenho.ATOR)
 
                 entidades.append(monster)
 

@@ -1,3 +1,7 @@
+from core.mensagens import Mensagem
+import tcod as libtcod
+
+
 class Combatente:
     """
     Classe guarda dados para a luta.
@@ -10,13 +14,24 @@ class Combatente:
         self.forca = forca
 
     def receber_dano(self, dano):
+        resultado = []
         self.hp -= dano
 
+        if self.hp <= 0:
+            resultado.append({'morto' : self.owner})
+        return resultado
+
     def atacar(self, alvo):
+        resultado = []
         dano = self.forca - alvo.combatente.defesa
 
         if dano > 0:
-            alvo.combatente.receber_dano(dano)
-            print(f'{self.owner.nome.capitalize()} atacou {alvo.nome} e causou {str(dano)} de dano.')
+            resultado.append({'mensagem':
+                                  Mensagem(f'{self.owner.nome.capitalize()} atacou {alvo.nome} e causou {str(dano)} de dano.', libtcod.white )} )
+            resultado.extend(alvo.combatente.receber_dano(dano))
+
         else:
-            print(f'{self.owner.nome.capitalize()} atacou {alvo.name} sem causar dano.')
+            resultado.append({'mensagem':
+                                 Mensagem(f'{self.owner.nome.capitalize()} atacou {alvo.name} sem causar dano.', libtcod.white)})
+
+        return resultado

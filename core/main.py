@@ -88,14 +88,14 @@ def main():
     # Com tudo pronto aqui começa o laço principal
     while not libtcod.console_is_window_closed():
         # captura eventos
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         if recalcula_visao:
             recalcular_visao(visao, player.x, player.y, area_visao, visao_ilumina_parede, visao_algoritimo)
 
         # desenhar
         desenhar_tudo(console, entidades,mapa_jogo, largura_tela, altura_tela, cores, visao, recalcula_visao, player,
-                      painel, barra_largura, largura_tela, painel_altura, painel_y, msg_log)
+                      painel, barra_largura, largura_tela, painel_altura, painel_y, msg_log, mouse)
 
         recalcula_visao = False
 

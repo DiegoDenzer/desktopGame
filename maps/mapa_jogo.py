@@ -71,7 +71,7 @@ class MapaJogo:
 
                 # Coloca ou não monstros na sala
                 self.criar_monstros(nova_sala, entidades, maximo_montros)
-
+                self.cria_itens(nova_sala,entidades, maximo_montros -1)
                 # Fazendo append na lista
                 salas.append(nova_sala)
                 numero_salas += 1
@@ -100,6 +100,22 @@ class MapaJogo:
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.tiles[x][y].bloqueado = False
             self.tiles[x][y].bloqueio_visao = False
+
+
+    # funções parecidadas isso não parece bom =) Refatorar
+    def cria_itens(self, sala, entidades, maximo_por_sala):
+
+        numero_itens = randint(0, maximo_por_sala)
+
+        for i in range(numero_itens):
+            x = randint(sala.x1 + 1, sala.x2 - 1)
+            y = randint(sala.y1 + 1, sala.y2 - 1)
+
+            if not any([entidade for entidade in entidades if entidade.x == x and entidade.y == y]):
+                item = Entidade(x, y, '!', libtcod.violet, 'Poção', ordem_desenho= OrdemDesenho.ITEM)
+
+                entidades.append(item)
+
 
     def criar_monstros(self, sala, entidades, maximo_por_sala):
         # Gera aleatoriamente o numero de monstro que pode ter em uma sala.

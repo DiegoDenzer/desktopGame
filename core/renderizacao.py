@@ -25,7 +25,7 @@ def desenhar_barra(panel, x, y, total_largura, nome, valor, maximo, cor, cor_fun
 
 
 def desenhar_tudo(console, entidades, mapa, largura, altura, cores, visao, recalcula_visao, player, panel,
-                  largura_barra,  largura_tela, altura_painel, panel_y, msg_log):
+                  largura_barra,  largura_tela, altura_painel, panel_y, msg_log, mouse):
 
     if recalcula_visao:
         # Desenhar mapa
@@ -71,7 +71,23 @@ def desenhar_tudo(console, entidades, mapa, largura, altura, cores, visao, recal
     desenhar_barra(panel, 1, 1, largura_barra, 'HP', player.combatente.hp, player.combatente.max_hp,
                libtcod.light_red, libtcod.darker_red)
 
+    libtcod.console_set_default_foreground(panel, libtcod.light_gray)
+    libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT,
+                             mostrar_nomes_mouse(mouse, entidades, visao))
+
+
     libtcod.console_blit(panel, 0, 0, largura_tela, altura_painel, 0, 0, panel_y)
+
+
+def mostrar_nomes_mouse(mouse, entidades, mapa):
+    (x, y) = (mouse.cx, mouse.cy)
+
+    nomes = [entidade.nome for entidade in entidades
+             if entidade.x == x and entidade.y == y and libtcod.map_is_in_fov(mapa, entidade.x, entidade.y)]
+    nomes = ', '.join(nomes)
+
+    return nomes.capitalize()
+
 
 def limpar_tudo(console, entidades):
     for entidade in entidades:
